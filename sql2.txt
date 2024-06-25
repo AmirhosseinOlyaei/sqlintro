@@ -15,7 +15,7 @@ ordered by customer name. Paste your SQL statement below. You will have to join 
 table with the Orders table, and the Orders table with the OrderDetails table, 
 because the Orders table is the one that ties the Customer table to the OrderDetails table.
 
-SELECT Customers.CustomerName, OrderDetails.OrderDetailsID
+SELECT Customers.CustomerName, OrderDetails.OrderDetailID
 FROM Customers
 JOIN Orders ON Customers.CustomerID = Orders.CustomerID
 JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID
@@ -57,22 +57,22 @@ ORDER BY Customers.CustomerName, Products.ProductName;
 to satisfy the foreign key constraint.  You will also have to specify the ID of an existing
 employee.  Paste your SQL statement below.
 
-INSERT INTO Orders (OrderID, CustomerID, EmployeeID, OrderDate, ShipCountry)
-VALUES (1046, 1, 5, '2024-06-25', 'USA');
+INSERT INTO Orders (OrderID, CustomerID, EmployeeID, OrderDate, ShipperID)
+VALUES (1047, 1, 5, '2024-06-25', 1);
 
 
 6. Add three OrderDetails.  These should specify the ID of the new Order you just created.  For each,
 you will have to specify the ID of an existing product.  Paste your SQL statement below.
 
-INSERT INTO OrderDetails (OrderDetailsID, OrderID, ProductID, Quantity, UnitPrice)
-VALUES (3001, 1046, 1, 10, 15.00),
-       (3002, 1046, 2, 5, 25.00),
-       (3003, 1046, 3, 8, 10.00);
+INSERT INTO OrderDetails (OrderDetailID, OrderID, ProductID, Quantity) VALUES (3001, 1047, 1, 10), (3002, 1047, 2, 5), (3003, 1047, 3, 8);
+
+Checking:
+SELECT * FROM OrderDetails WHERE OrderID = 1047;
 
 
 7.  Delete the third of the OrderDetails you just added.  Paste your SQL statement below.
 
-DELETE FROM OrderDetails WHERE OrderDetailsID = 3003;
+DELETE FROM OrderDetails WHERE OrderDetailID = 3003;
 
 
 8. Update the Price Table, so that every product with a price less than $20 has the price increased by
@@ -81,6 +81,9 @@ DELETE FROM OrderDetails WHERE OrderDetailsID = 3003;
 UPDATE Products
 SET Price = Price + 0.50
 WHERE Price < 20;
+
+Checking:
+SELECT * FROM Products WHERE Price < 20;
 
 
 9.  Try to delete Customer 76.  What happens? What would you have to delete in order to delete
@@ -95,3 +98,13 @@ DELETE FROM Orders WHERE CustomerID = 76;
 DELETE FROM Customers WHERE CustomerID = 76;
 
 
+Checking:
+
+SQL ==> SELECT * FROM Orders WHERE CustomerID = 76;
+[["OrderID", "CustomerID", "EmployeeID", "OrderDate", "ShipperID"]]
+
+SQL ==> SELECT * FROM OrderDetails WHERE OrderID IN (SELECT OrderID FROM Orders WHERE CustomerID = 76);
+[["OrderDetailID", "OrderID", "ProductID", "Quantity"]]
+
+SQL ==> SELECT * FROM Customers WHERE CustomerID = 76;
+[["CustomerID", "CustomerName", "ContactName", "Address", "City", "PostalCode", "Country"]]
